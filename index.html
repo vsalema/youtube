@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang='en' class=''>
+<head>
+<meta charset='UTF-8'>
+  <title>CodePen Demo</title>
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style>
+h1 {
+  margin-top: 0;
+}
+
+#search {
+  background: rgb(241, 30, 30);
+  color: white;
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+}
+
+#results {
+  background: transparent;
+  padding: 20px;
+  border: transparent;
+  border-radius: 0 0 0px 0px;
+  text-align: center;
+  height: 0px;
+  margin-top: -55px;
+  z-index: -1;
+  position: relative;
+  width:
+;
+}
+
+.viedoContainer {
+  width: 100%;
+  height: 417px;
+  margin: 40px auto 0;
+  padding: 0 20px 20px;
+  background: black;
+  border: transparent;
+  border-radius: 9px;
+  text-align: left;
+  position: absolute;
+  z-index: -1;
+  left: -2%;
+  top: 33%;
+}
+
+#url_box {
+  padding: 10px;
+  align-items: center;
+  margin-top: -1px;
+  margin-left: 22%;
+  margin-bottom: 10px;
+  width: 54%;
+  border-radius: 5px;
+  border: none;
+  background: #343535;
+  color: darkgrey;
+  text-align: center;
+  font-size: 12px;
+  height: 17px;
+  z-index: 3;
+  position: relative;
+  top: -1px;
+}
+input:focus {
+   outline: none;
+}
+
+body {
+background: black;
+  
+  }
+</style>
+
+</head>
+<body style="background-color:black;">
+
+<div  id="url_box">
+  <form onsubmit="return false">
+  <label for="searchQuery">Search YouTube: <label>
+    <input type="text" id="searchQuery" list="colours" placeholder="click to list ID">
+  <datalist id="colours">
+    <option value="dizgCL4XOgY" data-id="dizgCL4XOgY" />
+    <option value="n3z4cXvHpcI" data-id="n3z4cXvHpcI" />
+    <option value="Green" data-id="3" />
+    <option value="Black" data-id="4" />
+    <option value="White" data-id="5" />
+    </datalist>
+  <button id="searchButton" onclick="doValidate();">Search/submit</button>
+</form>
+ 
+</div>
+
+<div id="results">Results:</div>
+    
+    <script id="rendered-js" type="module">
+      
+      const apiKey = 'AIzaSyCucRPiYESnpi1fTrr3XOqAjIWr7J3Jcb8'; 
+const googleAPIUrl = 'https://www.googleapis.com/youtube/v3/search';
+
+const resultsDiv = document.querySelector('#results');
+const searchButton = document.querySelector('#searchButton');
+
+
+searchButton.addEventListener('click', (e) => {
+  
+  const searchTerm = document.querySelector('#searchQuery').value;
+  const apiPrefix = '&key=';
+  const searchQuery = '?part=snippet&maxResults=1&mute=1&q=' + searchTerm + apiPrefix + apiKey;
+  const url = googleAPIUrl + searchQuery;
+ 
+  resultsDiv.innerText = ' ' + searchTerm;
+  
+  
+  
+  
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+
+      data.items.forEach(item => {
+        console.log(item);
+
+        if (item.id.videoId != undefined) {
+          const link = `https://www.youtube.com/watch=?v=${item.id.videoId}`;
+          const video = `https://www.youtube.com/embed/${item.id.videoId}`;
+          const title = item.snippet.title;
+          const channel = item.snippet.channelTitle;
+          const description = item.snippet.description;
+          const thumbnail = item.snippet.thumbnails.high.url;
+
+          resultsDiv.innerHTML += `
+            <div class="viedoContainer">
+              
+              <iframe width="100%" src="${video}?controls=0&mute=0&byline=0&iv_load_policy=3&title=0&showinfo=0&modestbranding=1&portrait=0&autoplay=1&disablekb=1&loop=1&"
+              title="${title}" style="aspect-ratio: 788 / 443;" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+              <div>
+               
+              </div>
+            </div>
+          `;
+        }
+      
+        
+      
+      
+      
+      });
+    }).catch(err => {
+    resultsDiv.innerText = "Sorry we couldn't find what you searched for, or there has been an issue, please try searching for something else above or try again later";
+    });
+});
+      
+    </script>
+
+
+
+
+</body>
+</html>
